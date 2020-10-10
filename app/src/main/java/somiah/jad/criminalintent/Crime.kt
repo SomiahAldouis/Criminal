@@ -7,4 +7,4 @@ data class Crime(val id:       UUID    = UUID.randomUUID(),
                  var title:    String  = "",
                  var date:     Date    = Date(),
                  var isSolved: Boolean = false,
-                 var police:   Boolean = true)
+                 var police:   Boolean = false)

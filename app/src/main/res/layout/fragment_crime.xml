@@ -9,33 +9,48 @@
 
     <TextView
         style="?android:listSeparatorTextViewStyle"
-        android:fontFamily="@font/chilanka_regular"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/crime_title_label"/>
+        android:text="@string/crime_title_label"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/indie_flower_regular"/>
     <EditText
         android:id="@+id/crime_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/crime_title_hint"
-        android:fontFamily="@font/chilanka_regular"/>
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="12dp"
+        android:fontFamily="@font/indie_flower_regular"/>
     <TextView
         style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/crime_details_label"
-        android:fontFamily="@font/chilanka_regular"/>
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/indie_flower_regular"/>
     <Button
         android:id="@+id/crime_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="SAT Oct 03 04:08 EST 2020"
-        android:fontFamily="@font/chilanka_regular"/>
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/indie_flower_regular"/>
     <CheckBox
         android:id="@+id/crime_solved"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/crime_solved_label"
-        android:fontFamily="@font/chilanka_regular"/>
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/indie_flower_regular"/>
 
 </LinearLayout>
