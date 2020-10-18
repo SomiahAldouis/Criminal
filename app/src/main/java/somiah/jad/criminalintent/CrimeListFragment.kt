@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ColorStateListInflaterCompat.inflate
 import androidx.core.content.res.ComplexColorCompat.inflate
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,12 +22,7 @@ import java.util.zip.DataFormatException
 class CrimeListFragment : Fragment() {
 
     private lateinit var crimeRecyclerView: RecyclerView
-    private var adapter:CrimeAdapter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private var adapter:CrimeAdapter? = CrimeAdapter(emptyList())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,15 +33,25 @@ class CrimeListFragment : Fragment() {
 
         crimeRecyclerView= view.findViewById(R.id.crime_recycler_view)as RecyclerView
         crimeRecyclerView.layoutManager=LinearLayoutManager(context)
-
-        updateUI()
+        crimeRecyclerView.adapter = adapter
 
         return view
     }
-    private fun updateUI(){
-        val crimes = crimeListViewModel.crimes
+    private fun updateUI(crimes: List<Crime>){
         adapter = CrimeAdapter(crimes)
         crimeRecyclerView.adapter = adapter
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        crimeListViewModel.crimeListLiveData.observe(
+            viewLifecycleOwner,
+            Observer {crimes ->
+                crimes?.let {
+                    updateUI(crimes)
+                }
+            }
+        )
     }
 
     private inner class CrimeHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
@@ -85,34 +91,21 @@ class CrimeListFragment : Fragment() {
     private inner class CrimeAdapter(var crimes: List<Crime>): RecyclerView.Adapter<CrimeHolder>(){
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
 
-            return if (viewType == R.layout.item_solution){
-                val view = layoutInflater.inflate(R.layout.item_solution,parent,false)
-                CrimeHolder(view)
-            }else{
-                val view = layoutInflater.inflate(R.layout.item_view,parent,false)
-                CrimeHolder(view)
-            }
+            val view = layoutInflater.inflate(R.layout.item_view,parent,false)
+            return  CrimeHolder(view)
+
         }
 
         override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
 
             val crime = crimes[position]
-//            holder.apply {
-//                titleTextView.text= crime.title
-//                dateTextView.text = crime.date.toString()
-//            }
-
             holder.bind(crime)
         }
 
         override fun getItemCount()= crimes.size
         override fun getItemViewType(position: Int): Int {
-            return if(crimes[position].police){
-                R.layout.item_solution
-            }else
-            {
-                R.layout.item_view
-            }
+            return R.layout.item_view
+
         }
     }
 
