@@ -20,4 +20,7 @@ class CrimeViewModel: ViewModel() {
         crimeIDLiveData.value= crimeId
     }
 
+    fun saveCrime(crime: Crime){
+        crimeRepository.updateCrime(crime)
+    }
 }

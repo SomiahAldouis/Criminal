@@ -104,6 +104,11 @@ class CrimeFragment : Fragment() {
         titleField.addTextChangedListener(titleWatcher)
     }
 
+    override fun onStop() {
+        super.onStop()
+        crimeViewModel.saveCrime(crime)
+    }
+
     companion object{
         fun newInstance(crimeID: UUID): CrimeFragment{
 
