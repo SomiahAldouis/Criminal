@@ -1,5 +1,6 @@
 package somiah.jad.criminalintent
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import java.text.DateFormat
+import java.util.*
 import java.util.zip.DataFormatException
 
 //private const val TAG = "CrimeListFragment"
@@ -74,18 +76,24 @@ class CrimeListFragment : Fragment() {
             }else{
                 View.GONE
             }
-
-
         }
-
-
-
         override fun onClick(v: View) {
-            Toast.makeText(context, "${crime.title} pressed!",
-                Toast.LENGTH_SHORT)
-                .show()
-
+            callBacks?.onCrimeSelected(crime.id)
         }
+    }
+    interface CallBacks{
+        fun onCrimeSelected(crimeID: UUID)
+    }
+    private var callBacks: CallBacks?=null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        callBacks = context as CallBacks?
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        callBacks = null
     }
 
     private inner class CrimeAdapter(var crimes: List<Crime>): RecyclerView.Adapter<CrimeHolder>(){

@@ -2,8 +2,9 @@ package somiah.jad.criminalintent
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),CrimeListFragment.CallBacks {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -20,4 +21,13 @@ class MainActivity : AppCompatActivity() {
                 .commit()
         }
     }
-}
+
+    override fun onCrimeSelected(crimeID: UUID) {
+        val fragment = CrimeFragment.newInstance(crimeID)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
+    }
+} 

@@ -11,18 +11,29 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import java.util.*
+import androidx.lifecycle.Observer
 
-
+private const val ARG_CRIME_ID = "crime_id"
 class CrimeFragment : Fragment() {
 
     private lateinit var crime: Crime
     private lateinit var titleField: EditText
     private lateinit var dateButton: Button
     private lateinit var solvedCheckBox: CheckBox
+    private val crimeViewModel : CrimeViewModel by lazy {
+        ViewModelProviders.of(this).get(CrimeViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         crime = Crime()
+
+        val crimeID:UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
+        crimeViewModel.loadCrime(crimeID)
     }
 
     override fun onCreateView(  inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +57,24 @@ class CrimeFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        crimeViewModel.crimeLiveData.observe(viewLifecycleOwner, Observer {crime->
+            crime?.let {
+                this.crime = crime
+                updateUI()
+            }
+        })
+    }
+    private  fun updateUI(){
+        titleField.setText(crime.title)
+        dateButton.text = crime.date.toString()
+        solvedCheckBox.apply {
+            isChecked = crime.isSolved
+            jumpDrawablesToCurrentState()
+        }
     }
 
     override fun onStart() {
@@ -75,5 +104,17 @@ class CrimeFragment : Fragment() {
         titleField.addTextChangedListener(titleWatcher)
     }
 
+    companion object{
+        fun newInstance(crimeID: UUID): CrimeFragment{
+
+            val args= Bundle().apply {
+                putSerializable(ARG_CRIME_ID, crimeID)
+            }
+
+            return CrimeFragment().apply {
+                arguments=args
+            }
+        }
+    }
 
 }
