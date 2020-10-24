@@ -102,7 +102,7 @@ class CrimeListFragment : Fragment() {
         callBacks = null
     }
 
-    //private inner class CrimeAdapter: ListAdapter<Crime,CrimeHolder>(CrimeDiffUtil()){
+   // private inner class CrimeAdapter: ListAdapter<Crime,CrimeHolder>(CrimeDiffUtil()){
     private inner class CrimeAdapter(var crimes: List<Crime>): RecyclerView.Adapter<CrimeHolder>(){
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
 
@@ -113,7 +113,7 @@ class CrimeListFragment : Fragment() {
 
         override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
             val crime = crimes[position]
-            //val crime = getItem(position)
+           // val crime = getItem(position)
             holder.bind(crime)
         }
 
