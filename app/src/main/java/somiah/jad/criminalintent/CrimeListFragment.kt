@@ -26,8 +26,8 @@ import java.util.zip.DataFormatException
 class CrimeListFragment : Fragment() {
 
     private lateinit var crimeRecyclerView: RecyclerView
-   // private var adapter :CrimeAdapter? = CrimeAdapter(emptyList())
-    private var adapter :CrimeAdapter? = CrimeAdapter()
+    private var adapter :CrimeAdapter? = CrimeAdapter(emptyList())
+    //private var adapter :CrimeAdapter? = CrimeAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,11 +43,11 @@ class CrimeListFragment : Fragment() {
         return view
     }
     private fun updateUI(crimes: List<Crime>){
-       // adapter = CrimeAdapter(crimes)
-        adapter = CrimeAdapter()
+        adapter = CrimeAdapter(crimes)
+       // adapter = CrimeAdapter()
         crimeRecyclerView.adapter = adapter
-        adapter = crimeRecyclerView.adapter as CrimeAdapter
-        adapter?.submitList(crimes)
+        //adapter = crimeRecyclerView.adapter as CrimeAdapter
+        //adapter?.submitList(crimes)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,8 +102,8 @@ class CrimeListFragment : Fragment() {
         callBacks = null
     }
 
-    private inner class CrimeAdapter: ListAdapter<Crime,CrimeHolder>(CrimeDiffUtil()){
-    //private inner class CrimeAdapter(var crimes: List<Crime>): RecyclerView.Adapter<CrimeHolder>(){
+    //private inner class CrimeAdapter: ListAdapter<Crime,CrimeHolder>(CrimeDiffUtil()){
+    private inner class CrimeAdapter(var crimes: List<Crime>): RecyclerView.Adapter<CrimeHolder>(){
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CrimeHolder {
 
             val view = layoutInflater.inflate(R.layout.item_view,parent,false)
@@ -112,12 +112,12 @@ class CrimeListFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
-            //val crime = crimes[position]
-            val crime = getItem(position)
+            val crime = crimes[position]
+            //val crime = getItem(position)
             holder.bind(crime)
         }
 
-       // override fun getItemCount()= crimes.size
+        override fun getItemCount()= crimes.size
         override fun getItemViewType(position: Int): Int {
             return R.layout.item_view
 
