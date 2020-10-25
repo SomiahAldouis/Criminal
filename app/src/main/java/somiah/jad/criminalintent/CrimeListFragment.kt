@@ -3,11 +3,8 @@ package somiah.jad.criminalintent
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.widget.*
 import androidx.fragment.app.Fragment
-import android.widget.ImageView
-import android.widget.ListAdapter
-import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.res.ColorStateListInflaterCompat.inflate
 import androidx.core.content.res.ComplexColorCompat.inflate
 import androidx.lifecycle.Observer
@@ -24,6 +21,8 @@ import java.util.zip.DataFormatException
 class CrimeListFragment : Fragment() {
 
     private lateinit var crimeRecyclerView: RecyclerView
+    private lateinit var noCrimesText: TextView
+    private lateinit var noCrimesButton: Button
     private var adapter :CrimeAdapter? = CrimeAdapter(emptyList())
     //private var adapter :CrimeAdapter? = CrimeAdapter()
 
@@ -38,14 +37,26 @@ class CrimeListFragment : Fragment() {
         crimeRecyclerView.layoutManager=LinearLayoutManager(context)
         crimeRecyclerView.adapter = adapter
 
+        noCrimesText = view.findViewById(R.id.no_crimes_text) as TextView
+        noCrimesButton = view.findViewById(R.id.no_crimes_button) as Button
+
         return view
     }
     private fun updateUI(crimes: List<Crime>){
-        adapter = CrimeAdapter(crimes)
-       // adapter = CrimeAdapter()
-        crimeRecyclerView.adapter = adapter
-        //adapter = crimeRecyclerView.adapter as CrimeAdapter
-        //adapter?.submitList(crimes)
+        if (crimes.isEmpty()){
+            crimeRecyclerView.visibility = View.GONE
+            noCrimesText.visibility = View.VISIBLE
+            noCrimesButton.visibility = View.VISIBLE
+        } else {
+            adapter = CrimeAdapter(crimes)
+            crimeRecyclerView.visibility = View.VISIBLE
+            noCrimesText.visibility = View.GONE
+            noCrimesButton.visibility = View.GONE
+           // adapter = CrimeAdapter()
+            crimeRecyclerView.adapter = adapter
+            //adapter = crimeRecyclerView.adapter as CrimeAdapter
+            //adapter?.submitList(crimes)
+            }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,6 +69,11 @@ class CrimeListFragment : Fragment() {
                 }
             }
         )
+        noCrimesButton.setOnClickListener {
+            val crime = Crime()
+            crimeListViewModel.addCrime(crime)
+            callBacks?.onCrimeSelected(crime.id)
+        }
     }
 
     private inner class CrimeHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
