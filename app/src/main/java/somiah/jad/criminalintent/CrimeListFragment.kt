@@ -2,10 +2,8 @@ package somiah.jad.criminalintent
 
 import android.content.Context
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ListAdapter
 import android.widget.TextView
@@ -100,6 +98,29 @@ class CrimeListFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         callBacks = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_add_crime,menu)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.new_crime -> {
+                val crime = Crime()
+                crimeListViewModel.addCrime(crime)
+                callBacks?.onCrimeSelected(crime.id)
+                true
+            }
+            else ->  super.onOptionsItemSelected(item)
+        }
+
     }
 
    // private inner class CrimeAdapter: ListAdapter<Crime,CrimeHolder>(CrimeDiffUtil()){
