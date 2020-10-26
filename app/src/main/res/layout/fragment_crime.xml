@@ -33,7 +33,7 @@
         android:textSize="16dp"
         android:textStyle="bold"
         android:fontFamily="@font/indie_flower_regular"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="10dp"/>
     <Button
         android:id="@+id/crime_date"
         android:layout_width="match_parent"
@@ -67,6 +67,31 @@
         android:textSize="16dp"
         android:textStyle="bold"
         android:fontFamily="@font/indie_flower_regular"
-        android:layout_marginTop="40dp"/>
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/crime_suspect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/crime_suspect"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/indie_flower_regular"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="5dp"/>
+    <Button
+        android:id="@+id/crime_report"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/crime_report"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        android:fontFamily="@font/indie_flower_regular"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="10dp"/>
 
 </LinearLayout>

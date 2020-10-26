@@ -1,6 +1,7 @@
 package somiah.jad.criminalintent
 
 import DataBase.CrimeDataBase
+import DataBase.migration_1to_2
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.Room
@@ -16,7 +17,8 @@ class CrimeRepository private constructor(context: Context){
         context.applicationContext,
         CrimeDataBase::class.java,
         DATABASE_NAME
-    ).build()
+    ).addMigrations(migration_1to_2)
+     .build()
 
     private val crimeDao = database.crimeDao()
     private val executor = Executors.newSingleThreadExecutor()
