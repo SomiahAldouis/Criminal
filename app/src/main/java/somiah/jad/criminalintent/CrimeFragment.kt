@@ -32,6 +32,7 @@ private const val CRIME_DIALOG_TIME = "crime_time"
 private const val CRIME_REQUEST_TIME = 1
 private const val DATE_FORMAT = "EEE, MMM, dd"
 private const val REQUEST_CONTACT = 1
+private const val REQUEST_CONTACT_PHONE = 1
 
 class CrimeFragment : Fragment(), DatePickerFragment.CallBacks, TimePickerFragment.CallBacks {
 
@@ -42,6 +43,7 @@ class CrimeFragment : Fragment(), DatePickerFragment.CallBacks, TimePickerFragme
     private lateinit var solvedCheckBox: CheckBox
     private lateinit var reportButton: Button
     private lateinit var suspectButton: Button
+    private lateinit var suspectPhoneButton: Button
 
     private val crimeViewModel : CrimeViewModel by lazy {
         ViewModelProviders.of(this).get(CrimeViewModel::class.java)
@@ -60,12 +62,13 @@ class CrimeFragment : Fragment(), DatePickerFragment.CallBacks, TimePickerFragme
         // Inflate the layout for this fragment
 
         val view = inflater.inflate(R.layout.fragment_crime, container, false)
-        titleField     = view.findViewById(R.id.crime_title) as EditText
-        dateButton     = view.findViewById(R.id.crime_date) as Button
-        timeButton     = view.findViewById(R.id.crime_time) as Button
-        solvedCheckBox = view.findViewById(R.id.crime_solved) as CheckBox
-        reportButton   = view.findViewById(R.id.crime_report) as Button
-        suspectButton  = view.findViewById(R.id.crime_suspect) as Button
+        titleField          = view.findViewById(R.id.crime_title) as EditText
+        dateButton          = view.findViewById(R.id.crime_date) as Button
+        timeButton          = view.findViewById(R.id.crime_time) as Button
+        solvedCheckBox      = view.findViewById(R.id.crime_solved) as CheckBox
+        reportButton        = view.findViewById(R.id.crime_report) as Button
+        suspectButton       = view.findViewById(R.id.crime_suspect) as Button
+        suspectPhoneButton  = view.findViewById(R.id.crime_suspect_phone) as Button
 
         solvedCheckBox.apply {
             setOnCheckedChangeListener { _, isChecked ->
@@ -86,7 +89,7 @@ class CrimeFragment : Fragment(), DatePickerFragment.CallBacks, TimePickerFragme
         }
         suspectButton.apply {
             val pickContactIntent =
-                Intent(Intent.ACTION_PICK,ContactsContract.Contacts.CONTENT_URI)
+                Intent(Intent.ACTION_PICK,ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
 
             setOnClickListener { startActivityForResult(pickContactIntent, REQUEST_CONTACT) }
 
@@ -99,6 +102,21 @@ class CrimeFragment : Fragment(), DatePickerFragment.CallBacks, TimePickerFragme
                 isEnabled = false
             }
         }
+       suspectPhoneButton.apply {
+           val pickContactIntent = Intent(Intent.ACTION_DIAL)
+           pickContactIntent.data = Uri.parse("tel:${crime.suspectPhone}")
+           setOnClickListener {
+
+               startActivityForResult(pickContactIntent, REQUEST_CONTACT_PHONE)
+           }
+           val packageManager: PackageManager = requireActivity().packageManager
+           val resolvedActivity: ResolveInfo? =
+               packageManager.resolveActivity(pickContactIntent,
+                   PackageManager.MATCH_DEFAULT_ONLY)
+           if (resolvedActivity == null) {
+               isEnabled = false
+           }
+       }
 
         return view
     }
@@ -130,7 +148,8 @@ class CrimeFragment : Fragment(), DatePickerFragment.CallBacks, TimePickerFragme
             resultCode != Activity.RESULT_OK -> return
             requestCode == REQUEST_CONTACT && data != null -> {
                 val contactUri: Uri? = data.data
-                val queryFields = arrayOf(ContactsContract.Contacts.DISPLAY_NAME)
+                val queryFields= arrayOf(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
+                    ContactsContract.CommonDataKinds.Phone.NUMBER)
 
                 val cursor = requireActivity().contentResolver
                     .query(contactUri!!, queryFields, null, null, null)
@@ -139,9 +158,12 @@ class CrimeFragment : Fragment(), DatePickerFragment.CallBacks, TimePickerFragme
                         return }
                     it.moveToFirst()
                     val suspect = it.getString(0)
+                    val suspectPhone= it.getString(0)
                     crime.suspect = suspect
+                    crime.suspectPhone = suspectPhone.toInt()
                     crimeViewModel.saveCrime(crime)
                     suspectButton.text = suspect
+                    suspectPhoneButton.text = suspectPhone
                 }
             }
         }
@@ -158,13 +180,14 @@ class CrimeFragment : Fragment(), DatePickerFragment.CallBacks, TimePickerFragme
             getString(R.string.crime_report_no_suspect)
         }else{
             getString(R.string.crime_report_suspect, crime.suspect)
+            getString(R.string.crime_report_suspect_phone, crime.suspectPhone.toString())
         }
 
         return getString(R.string.crime_report_text,
                         crime.title,
                         dateString,
                         solvedString,
-                        suspect)
+                        suspect,)
     }
 
     override fun onStart() {
